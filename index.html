@@ -18,41 +18,35 @@
     <![endif]-->
     
   </head>
-  <body onscroll="vm.scroll()">
+  <body id="body" onscroll="vm.scroll()" onresize="vm.resize()">
     
     <div id="app" class="container">
 
       <div class="row" id="list-cantainer" >
-
-      <template v-for="(item, index) in items">
-          <a :id="index + 1"></a>
-          <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" >
-            <div class="row">
-              <div class="col-sx-12">
-                <div class="thumbnail">
-                  <img :src="item.p" alt="...">
-                  <div class="caption">
-                    <h6 style="line-height: 2;">
-                      <span class="label label-primary" @click="filter()" style="cursor: pointer;">{{ index + 1 }}</span>&shy;
-                      <template v-for="label in item.l">
-                        <span class="label" :class="'label-' + label.c" @click="filter(label.v)" style="cursor: pointer;">
-                            {{ label.v }}
-                        </span>&shy;
-                      </template>
-                    </h6>
-                    <p> {{ item.h }} </p>
-                    <p><a href="javascript:;" class="btn btn-primary" @click="play(index)" role="button">播放</a></p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="clearfix visible-xs-block"></div>
-          <div v-if="(index + 1) % 2 == 0 " class="clearfix visible-sm-block"></div>
-          <div v-if="(index + 1) % 3 == 0 " class="clearfix visible-md-block"></div>
-          <div v-if="(index + 1) % 4 == 0 " class="clearfix visible-lg-block"></div>
-          
-        </template>
+        <!-- 第一列 -->
+        <div id="items-1" class="col-xs-12 col-sm-6 col-md-4 col-lg-3" >
+          <template v-for="(item, index) in rows.one" >
+            <rows :item="item" :index="index" :col='1' :row="getrows()" :filter="filter" :play="play">
+          </template>
+        </div>
+        <!-- 第二列 -->
+        <div id="items-2" class="col-xs-12 col-sm-6 col-md-4 col-lg-3 hidden-xs " >
+          <template v-for="(item, index) in rows.two" >
+            <rows :item="item" :index="index" :col='2' :row="getrows()" :filter="filter" :play="play">
+          </template>
+        </div>
+        <!-- 第三列 -->
+        <div id="items-3" class="col-xs-12 col-sm-6 col-md-4 col-lg-3 hidden-xs hidden-sm" >
+          <template v-for="(item, index) in rows.three">
+            <rows :item="item" :index="index" :col='3' :row="getrows()" :filter="filter" :play="play">
+          </template>
+        </div>
+        <!-- 第四列 -->
+        <div id="items-4" class="col-xs-12 col-sm-6 col-md-4 col-lg-3 hidden-xs hidden-sm hidden-md" >
+          <template v-for="(item, index) in rows.four">
+            <rows :item="item" :index="index" :col='4' :row="getrows()" :filter="filter" :play="play">
+          </template>
+        </div>
         <div class="col-xs-12" :class="end">
           <p class="h3 text-warning" style="text-align: center;">没有更多了！</p>
         </div>

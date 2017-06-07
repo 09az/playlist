@@ -1,3 +1,35 @@
+Vue.component('rows', {
+  // 声明 props
+  props: ['item','index','col','filter','play','row'],
+  // 就像 data 一样，prop 可以用在模板内
+  // 同样也可以在 vm 实例中像 “this.message” 这样使用
+  template: '<div class="col-xs-12" >\
+              <a :id="row*index + col"></a>\
+              <div class="row">\
+                <div class="col-sx-12">\
+                  <div class="thumbnail">\
+                    <img :src="item.p" alt="...">\
+                    <div class="caption">\
+                      <h6 style="line-height: 2;">\
+                        <span class="label label-primary" @click="vm.filter()" style="cursor: pointer;">\
+                          {{ row*index + col }}\
+                        </span>&shy; \
+                        <template v-for="label in item.l">\
+                          <span class="label" :class="\'label-\' + label.c" @click="filter(label.v)" style="cursor: pointer;">\
+                            {{ label.v }} \
+                          </span>&shy;\
+                        </template> \
+                      </h6>\
+                      <p> {{ item.h }} </p>\
+                      <p>\
+                        <a href="javascript:;" class="btn btn-primary" @click="play(row*index + col)" role="button">播放</a>\
+                      </p> \
+                    </div> \
+                  </div>\
+                </div>\
+              </div>\
+            </div>'  
+});
 
 var vm = new Vue({
   el: '#app',
@@ -12,11 +44,15 @@ var vm = new Vue({
      playbackRate:1,//播放速度
      page:1,
      pageSize:12,
-     end:'hidden'
+     end:'hidden',//没有更多数据了
+     rows:{}
   },
   computed: {
     items: function () {
         return this.data.slice(0,this.page * this.pageSize);
+    },
+    row: function (){
+      return this.getrows();
     }
   },
   watch: {
@@ -24,6 +60,11 @@ var vm = new Vue({
       if (this.index > -1) {
       	this.labels = this.items[this.index].l;
       }
+    },
+    items: function(){
+     // console.log('watch')
+      this.resize();
+     // console.log('/watch')
     }
   },
   methods: {
@@ -50,6 +91,7 @@ var vm = new Vue({
   	},
   	//播放页面切换
   	play: function (index) {
+      index -= 1;//瀑布流id，比items的 [index] 大 1
   		this.hidden = false;
   		this.index = index;
   		this.source = this.items[index].s;
@@ -94,41 +136,40 @@ var vm = new Vue({
     	var video =document.getElementById(video);
     	var	second = 30,//快进秒数
 	    	keynum;
-		if(window.event) // IE8 及更早IE版本
-		{
-			keynum=event.keyCode;
-		}
-		
-		
-		switch(keynum)
-		{
-			case 37://左键
-			  	video.currentTime -= second;
-			  	break;
-			case 39://右键
-			  	video.currentTime += second;
-			  	break;
-			case 38://上键
-				if (video.muted) {
-					video.volume = 0;
-				};
-				video.muted=false;
-				if (video.volume > 0.9) {
-					video.volume = 1;
-				};
-				if (video.volume < 1) {
-					video.volume += 0.1;
-				};
-				
-			  	break;
-			case 40://下键
-				video.muted=false;
-				if (video.volume < 0.1) {
-					video.volume = 0;
-				};
-				if (video.volume >0){
-					 video.volume -= 0.1;
-				}
+  		if(window.event) // IE8 及更早IE版本
+  		{
+  			keynum=event.keyCode;
+  		}
+  		
+  		switch(keynum)
+  		{
+  			case 37://左键
+  			  	video.currentTime -= second;
+  			  	break;
+  			case 39://右键
+  			  	video.currentTime += second;
+  			  	break;
+  			case 38://上键
+  				if (video.muted) {
+  					video.volume = 0;
+  				};
+  				video.muted=false;
+  				if (video.volume > 0.9) {
+  					video.volume = 1;
+  				};
+  				if (video.volume < 1) {
+  					video.volume += 0.1;
+  				};
+  				
+  			  	break;
+  			case 40://下键
+  				video.muted=false;
+  				if (video.volume < 0.1) {
+  					video.volume = 0;
+  				};
+  				if (video.volume >0){
+  					 video.volume -= 0.1;
+  				}
 			  	break;
 		  	case 32:// 空格键
 		  		video.paused ? video.play() : video.pause();
@@ -152,13 +193,51 @@ var vm = new Vue({
 		  	case 48:// 数字0
 		  		video.playbackRate = 1;
 		  		break;
-		}
-		this.playbackRate = video.playbackRate;
+  		}
+  		this.playbackRate = video.playbackRate;
 		//console.log(keynum);
 		//console.log(video.playbackRate);
 
+    },
+    getrows: function(){
+      var windowWidth = document.getElementById('body').offsetWidth;
+      switch(true){
+        case windowWidth < 768:
+          return 1;
+        break;
+        case windowWidth >= 768 && windowWidth < 992:
+          return 2;
+        break;
+        case windowWidth >= 992 && windowWidth < 1200:
+          return 3
+        break;
+        case windowWidth >= 1200:
+          return 4;
+        break;
+      }
+    },
+    resize: function(){
+     // console.log(this.items.length)
+      this.rows = {'one':[],'two':[],'three':[],'four':[]};
+      var d = this.items;
+      var row = this.getrows();
+      for (var i = 0,len = d.length; i < len; i++) {
+        if(i%row == 0){
+          this.rows.one.push(d[i]);
+        }
+        if(i%row == 1 && row >=2){
+          this.rows.two.push(d[i]);
+        }
+        if(i%row == 2 && row >=3){
+          this.rows.three.push(d[i]);
+        }
+        if(i%row == 3 && row >=4 ){
+          this.rows.four.push(d[i]);
+        }
+      };
+      //console.log(this.rows);
     }
-    
+
   } 
 });
 
