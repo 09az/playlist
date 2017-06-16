@@ -122,8 +122,8 @@ var vm = new Vue({
     	this.changeview();
       //给地址增加锚
       location.href = location.hash;
-  	
     },
+    //隐藏播放页，显示列表
     changeview: function (){
       this.hidden = !this.hidden;
       this.source = '';
@@ -199,6 +199,7 @@ var vm = new Vue({
 		//console.log(video.playbackRate);
 
     },
+    //根据页面宽度，返回瀑布流的列数
     getrows: function(){
       var windowWidth = document.getElementById('body').offsetWidth;
       switch(true){
@@ -216,6 +217,7 @@ var vm = new Vue({
         break;
       }
     },
+    //resize事件发生时，重新计算列数和赋值
     resize: function(){
      // console.log(this.items.length)
       this.rows = {'one':[],'two':[],'three':[],'four':[]};
@@ -236,6 +238,22 @@ var vm = new Vue({
         }
       };
       //console.log(this.rows);
+    },
+    loaded: function(){
+      var script,
+          body = document.body;
+          host='js/',
+          paths = [
+              'data.js',
+              'data.js'
+          ];
+      for (var i = 0; i < paths.length; i++) {
+        script = document.createElement('script');
+        script.src = host + paths[i];
+        body.appendChild(script);
+        body.removeChild(body.lastChild);
+      };
+      
     }
 
   } 
