@@ -16,7 +16,7 @@ Vue.component('rows', {
                         </span>&shy; \
                         <template v-for="label in item.l">\
                           <span class="label" :class="\'label-\' + label.c" @click="filter(label.v)" style="cursor: pointer;">\
-                            {{ label.v }} \
+                            <abbr :title="label.z">{{ label.v }}</abbr> \
                           </span>&shy;\
                         </template> \
                       </h6>\

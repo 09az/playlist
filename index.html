@@ -16,7 +16,11 @@
       <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-    
+    <style type="text/css">
+      div#list-cantainer h6 span abbr[title],#app div nav div div p span.label abbr{
+        border-bottom: none;
+      }
+    </style>
   </head>
   <body id="body" onscroll="vm.scroll()" onload="vm.loaded()" onresize="vm.resize()">
     
@@ -69,8 +73,9 @@
               <p class="navbar-text" style="line-height: 1.78">
                 <template v-for="(label, index) in labels">
                   <span class="label" :class="'label-' + label.c" @click="filter(label.v,true)" style="cursor: pointer;">
-                      {{ label.v }}
-                  </span>&shy;
+                      <abbr :title="label.z">{{ label.v }}</abbr>
+                  </span>
+                  &shy;&shy;
                 </template> 
               </p>
             </div>
