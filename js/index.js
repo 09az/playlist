@@ -8,7 +8,12 @@ Vue.component('rows', {
               <div class="row">\
                 <div class="col-sx-12">\
                   <div class="thumbnail">\
-                    <img :src="item.p" alt="...">\
+                    <template v-if="!item.p">\
+                      <video width="100%" muted name="media" :src="item.s" type="video/mp4">\
+                    </template>\
+                    <template v-else>\
+                      <img :src="item.p">\
+                    </template>\
                     <div class="caption">\
                       <h6 style="line-height: 2;">\
                         <span class="label label-primary" @click="vm.filter()" style="cursor: pointer;">\
@@ -45,7 +50,17 @@ var vm = new Vue({
      page:1,
      pageSize:12,
      end:'hidden',//没有更多数据了
+     currentTime:Math.random()*100 + 80,
      rows:{}
+  },
+  updated:function(){
+    var videos = document.getElementsByTagName('video'),
+          len = videos.length;
+      while (len--){
+        // console.log(len)
+        // console.log(videos.item(len))
+        videos.item(len).currentTime = this.currentTime;
+      } 
   },
   computed: {
     items: function () {
@@ -100,6 +115,7 @@ var vm = new Vue({
         var listCtn = document.getElementById('list-cantainer');
         listCtn.style.height = "0";
         listCtn.style.overflow = "hidden";
+        document.getElementById(video).currentTime=this.currentTime;
     },
     //下拉加载
     scroll: function (){
@@ -244,12 +260,12 @@ var vm = new Vue({
           body = document.body;
           host='js/',
           paths = [
-              'data.js',
+              host + 'data.js',
               'data.js'
           ];
       for (var i = 0; i < paths.length; i++) {
         script = document.createElement('script');
-        script.src = host + paths[i];
+        script.src = paths[i];
         body.appendChild(script);
         body.removeChild(body.lastChild);
       };
