@@ -8,7 +8,12 @@ Vue.component('rows', {
               <div class="row">\
                 <div class="col-sx-12">\
                   <div class="thumbnail">\
-                    <img :src="item.p" alt="...">\
+                    <template v-if="!item.p">\
+                      <video width="100%" muted name="media" :src="item.s" type="video/mp4">\
+                    </template>\
+                    <template v-else>\
+                      <img :src="item.p">\
+                    </template>\
                     <div class="caption">\
                       <h6 style="line-height: 2;">\
                         <span class="label label-primary" @click="vm.filter()" style="cursor: pointer;">\
@@ -45,7 +50,17 @@ var vm = new Vue({
      page:1,
      pageSize:12,
      end:'hidden',//没有更多数据了
+     currentTime:Math.random()*100 + 80,
      rows:{}
+  },
+  updated:function(){
+    var videos = document.getElementsByTagName('video'),
+          len = videos.length;
+      while (len--){
+        // console.log(len)
+        // console.log(videos.item(len))
+        videos.item(len).currentTime = this.currentTime;
+      } 
   },
   computed: {
     items: function () {

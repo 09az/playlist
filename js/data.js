@@ -1,6 +1,10 @@
 vm.data.push(
 	{
 		t:'冰河世纪',
+	    s:'iceage4.mp4'
+	},
+	{
+		t:'冰河世纪',
 		p:'20170523172718.jpg',
 	    s:'iceage4.mp4'
 	},
