@@ -1,6 +1,22 @@
+// vm.src = ''
+// vm.data.push(
+//   {
+//     l:[
+//       c:'',
+//       v:'',
+//       z:'',
+//       ''
+//     ],
+//     h:'',
+//     p:'',
+//     s:'iceage4.mp4'
+//   }
+// );
+// vm.old = vm.data;
+
 Vue.component('rows', {
   // 声明 props
-  props: ['item','index','col','filter','play','row'],
+  props: ['item','index','col','filter','play','row','page','label_class'],
   // 就像 data 一样，prop 可以用在模板内
   // 同样也可以在 vm 实例中像 “this.message” 这样使用
   template: '<div class="col-xs-12" >\
@@ -9,7 +25,7 @@ Vue.component('rows', {
                 <div class="col-sx-12">\
                   <div class="thumbnail">\
                     <template v-if="!item.p">\
-                      <video width="100%" muted name="media" :src="item.s" type="video/mp4">\
+                      <video :name="\'video\'+ page" width="100%" muted :src="item.s" type="video/mp4">\
                     </template>\
                     <template v-else>\
                       <img :src="item.p">\
@@ -19,10 +35,17 @@ Vue.component('rows', {
                         <span class="label label-primary" @click="vm.filter()" style="cursor: pointer;">\
                           {{ row*index + col }}\
                         </span>&shy; \
-                        <template v-for="label in item.l">\
-                          <span class="label" :class="\'label-\' + label.c" @click="filter(label.v)" style="cursor: pointer;">\
-                            <abbr :title="label.z">{{ label.v }}</abbr> \
-                          </span>&shy;\
+                        <template v-for="(label,index) in item.l">\
+                          <template v-if="label.c">\
+                            <span class="label" :class="\'label-\' + label.c" @click="filter(label.v)" style="cursor: pointer;">\
+                              <abbr :title="label.z">{{ label.v }}</abbr> \
+                            </span>&shy;\
+                          </template> \
+                          <template v-else>\
+                            <span class="label" :class="\'label-\' + label_class[Math.floor((Math.random()*label_class.length))]" @click="filter(label)" style="cursor: pointer;">\
+                              <abbr :title="label.z">{{ label }}</abbr> \
+                            </span>&shy;\
+                          </template> \
                         </template> \
                       </h6>\
                       <p> {{ item.h }} </p>\
@@ -50,11 +73,12 @@ var vm = new Vue({
      page:1,
      pageSize:12,
      end:'hidden',//没有更多数据了
-     currentTime:Math.random()*100 + 80,
-     rows:{}
+     currentTime:70,
+     rows:{},
+     label_class:['danger','warning','info','success','primary'],
   },
   updated:function(){
-    var videos = document.getElementsByTagName('video'),
+    var videos = document.getElementsByName('video'+ this.page),
           len = videos.length;
       while (len--){
         // console.log(len)
@@ -94,7 +118,7 @@ var vm = new Vue({
   		this.data = this.old.filter(function(value){
     		if (value.l == undefined) return false; //兼容没有label的记录
   			for (var i = 0,len = value.l.length; i < len; i++) {
-  				if (value.l[i].v == label) {
+  				if (value.l[i].v == label || value.l[i] == label) {
   					return true;
   				};
   			};
@@ -115,7 +139,7 @@ var vm = new Vue({
         var listCtn = document.getElementById('list-cantainer');
         listCtn.style.height = "0";
         listCtn.style.overflow = "hidden";
-        document.getElementById(video).currentTime=this.currentTime;
+        document.getElementById('playbox').currentTime=this.currentTime;
     },
     //下拉加载
     scroll: function (){

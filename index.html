@@ -30,25 +30,25 @@
         <!-- 第一列 -->
         <div id="items-1" class="col-xs-12 col-sm-6 col-md-4 col-lg-3" >
           <template v-for="(item, index) in rows.one" >
-            <rows :item="item" :index="index" :col='1' :row="getrows()" :filter="filter" :play="play">
+            <rows :page="page" :item="item" :index="index" :col='1' :row="getrows()" :filter="filter" :play="play" :label_class="label_class">
           </template>
         </div>
         <!-- 第二列 -->
         <div id="items-2" class="col-xs-12 col-sm-6 col-md-4 col-lg-3 hidden-xs " >
           <template v-for="(item, index) in rows.two" >
-            <rows :item="item" :index="index" :col='2' :row="getrows()" :filter="filter" :play="play">
+            <rows :page="page" :item="item" :index="index" :col='2' :row="getrows()" :filter="filter" :play="play" :label_class="label_class">
           </template>
         </div>
         <!-- 第三列 -->
         <div id="items-3" class="col-xs-12 col-sm-6 col-md-4 col-lg-3 hidden-xs hidden-sm" >
           <template v-for="(item, index) in rows.three">
-            <rows :item="item" :index="index" :col='3' :row="getrows()" :filter="filter" :play="play">
+            <rows :page="page" :item="item" :index="index" :col='3' :row="getrows()" :filter="filter" :play="play" :label_class="label_class">
           </template>
         </div>
         <!-- 第四列 -->
         <div id="items-4" class="col-xs-12 col-sm-6 col-md-4 col-lg-3 hidden-xs hidden-sm hidden-md" >
           <template v-for="(item, index) in rows.four">
-            <rows :item="item" :index="index" :col='4' :row="getrows()" :filter="filter" :play="play">
+            <rows :page="page" :item="item" :index="index" :col='4' :row="getrows()" :filter="filter" :play="play" :label_class="label_class">
           </template>
         </div>
         <div class="col-xs-12" :class="end">
@@ -72,10 +72,18 @@
               </a>
               <p class="navbar-text" style="line-height: 1.78">
                 <template v-for="(label, index) in labels">
-                  <span class="label" :class="'label-' + label.c" @click="filter(label.v,true)" style="cursor: pointer;">
-                      <abbr :title="label.z">{{ label.v }}</abbr>
-                  </span>
-                  &shy;&shy;
+                  <template v-if="label.c">
+                    <span class="label" :class="'label-' + label.c" @click="filter(label.v,true)" style="cursor: pointer;">
+                        <abbr :title="label.z">{{ label.v }}</abbr>
+                    </span>
+                    &shy;&shy;
+                  </template> 
+                  <template v-else>
+                    <span class="label" :class="'label-' + label_class[Math.floor((Math.random()*label_class.length))]" @click="filter(label,true)" style="cursor: pointer;">
+                          <abbr :title="label.z">{{ label }}</abbr>
+                      </span>
+                      &shy;&shy;
+                  </template> 
                 </template> 
               </p>
             </div>
