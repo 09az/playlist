@@ -21,7 +21,7 @@ vm.data.push(
 	},
 	{
 		t:'冰河世纪',
-		l:[{c:'danger',v:'HD'},{c:'info',v:'0:34'}],
+		l:[{c:'danger',v:'HD'},{c:'info',v:'0:34'},'label1','label2','label3'],
 		h:'sksksk剪刀手是的否啥地方记录数都发',
 		p:'20170523172718.jpg',
 	    s:'iceage4.mp4'
