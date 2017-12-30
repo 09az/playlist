@@ -22,7 +22,7 @@
       }
     </style>
   </head>
-  <body id="body" onscroll="vm.scroll()" onload="vm.loaded()" onresize="vm.resize()">
+  <body id="body" onscroll="vm.scroll()" onresize="vm.resize()">
     
     <div id="app" class="container">
 
@@ -72,18 +72,10 @@
               </a>
               <p class="navbar-text" style="line-height: 1.78">
                 <template v-for="(label, index) in labels">
-                  <template v-if="label.c">
-                    <span class="label" :class="'label-' + label.c" @click="filter(label.v,true)" style="cursor: pointer;">
-                        <abbr :title="label.z">{{ label.v }}</abbr>
+                    <span class="label" :class="'label-' + label_class[index%label_class.length]" @click="filter(label,true)" style="cursor: pointer;">
+                      {{ label }}
                     </span>
                     &shy;&shy;
-                  </template> 
-                  <template v-else>
-                    <span class="label" :class="'label-' + label_class[Math.floor((Math.random()*label_class.length))]" @click="filter(label,true)" style="cursor: pointer;">
-                          <abbr :title="label.z">{{ label }}</abbr>
-                      </span>
-                      &shy;&shy;
-                  </template> 
                 </template> 
               </p>
             </div>
@@ -93,6 +85,10 @@
         <div class="col-xs-12 col-md-10 col-md-offset-1">
           <video id="playbox" width="100%" controls preload muted name="media" :poster="poster" :src="source" type="video/mp4">
           </video>
+          <div class="thumbnail" v-show="images">
+            <h5>详情</h5>
+            <img :src="src" alt="..." v-for="src in images">
+          </div>
         </div>
       </div>
     </div>

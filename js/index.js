@@ -22,31 +22,22 @@ Vue.component('rows', {
               <div class="row">\
                 <div class="col-sx-12">\
                   <div class="thumbnail">\
-                    <template v-if="!item.p">\
-                      <video :name="\'video\'+ page" width="100%" muted :src="item.s" type="video/mp4">\
-                    </template>\
-                    <template v-else>\
-                      <img :src="item.p">\
-                    </template>\
+                      <img :src="item.poster">\
                     <div class="caption">\
-                      <h6 style="line-height: 2;">\
+                      <h4 style="line-height: 2;">\
+                        {{item.title}}\
+                      </h4>\
+                      <p>\
                         <span class="label label-primary" @click="vm.filter()" style="cursor: pointer;">\
-                          {{ row*index + col }}\
-                        </span>&shy; \
-                        <template v-for="(label,index) in item.l">\
-                          <template v-if="label.c">\
-                            <span class="label" :class="\'label-\' + label.c" @click="filter(label.v)" style="cursor: pointer;">\
-                              <abbr :title="label.z">{{ label.v }}</abbr> \
-                            </span>&shy;\
+                            {{ row*index + col }}\
+                          </span>&shy; \
+                          <template v-for="(label,index) in item.label">\
+                              <span class="label" :class="\'label-\' + label_class[index%label_class.length]" @click="filter(label)" style="cursor: pointer;">\
+                                {{ label }}\
+                              </span>&shy;\
                           </template> \
-                          <template v-else>\
-                            <span class="label" :class="\'label-\' + label_class[Math.floor((Math.random()*label_class.length))]" @click="filter(label)" style="cursor: pointer;">\
-                              <abbr :title="label.z">{{ label }}</abbr> \
-                            </span>&shy;\
-                          </template> \
-                        </template> \
-                      </h6>\
-                      <p> {{ item.h }} </p>\
+                        <span/>\
+                      </p>\
                       <p>\
                         <a href="javascript:;" class="btn btn-primary" @click="play(row*index + col)" role="button">播放</a>\
                       </p> \
@@ -60,21 +51,23 @@ Vue.component('rows', {
 var vm = new Vue({
   el: '#app',
   data: {
-  	 index:-1,//当前的记录
-  	 labels:{},//导航条label
-  	 hidden:true,
-  	 old:[],
-     data:[],
-     source:'',
-     poster:'',
-     playbackRate:1,//播放速度
-     page:1,
-     pageSize:12,
-     end:'hidden',//没有更多数据了
-     currentTime:70,
-     rows:{},
-     label_class:['danger','warning','info','success','primary'],
-  },
+    index:-1,//当前的记录
+    labels:{},//导航条label
+    hidden:true,
+    old:[],
+    data:[],
+    source:'',
+    poster:'',
+    playbackRate:1,//播放速度
+    page:1,
+    images:[],
+    pageSize:12,
+    end:'hidden',//没有更多数据了
+    currentTime:70,
+    rows:{},
+    label_class:['danger','warning','info','success','primary'],
+    dir:'',
+  },  
   updated:function(){
     var videos = document.getElementsByName('video'+ this.page),
           len = videos.length;
@@ -95,7 +88,7 @@ var vm = new Vue({
   watch: {
   	index: function () {
       if (this.index > -1) {
-      	this.labels = this.items[this.index].l;
+      	this.labels = this.items[this.index].label;
       }
     },
     items: function(){
@@ -114,9 +107,9 @@ var vm = new Vue({
   			return this.data = this.old;
   		};
   		this.data = this.old.filter(function(value){
-    		if (value.l == undefined) return false; //兼容没有label的记录
-  			for (var i = 0,len = value.l.length; i < len; i++) {
-  				if (value.l[i].v == label || value.l[i] == label) {
+    		if (value.label == undefined) return false; //兼容没有label的记录
+  			for (var i = 0,len = value.label.length; i < len; i++) {
+  				if (value.label[i] == label) {
   					return true;
   				};
   			};
@@ -131,8 +124,13 @@ var vm = new Vue({
       index -= 1;//瀑布流id，比items的 [index] 大 1
   		this.hidden = false;
   		this.index = index;
-  		this.source = this.items[index].s;
-  		this.poster = this.items[index].p;
+      console.log(this.items[index].src)
+      for (var key in this.items[index].src) {
+        this.source = this.items[index].src[key];
+      }
+  		this.poster = this.items[index].poster;
+      this.images = this.items[index].images;
+      // console.vm.$log(this.images)
         location.href = "#" + (index + 1);
         var listCtn = document.getElementById('list-cantainer');
         listCtn.style.height = "0";
@@ -145,8 +143,6 @@ var vm = new Vue({
     	if (offset < 50) {
     		if (this.page < this.data.length / this.pageSize) {
     			  this.page += 1;
-    			// console.log(this.data.length / this.pageSize)
-    			// console.log(this.page);
     	    };
     	    if (this.page >= this.data.length / this.pageSize ) {
     	    	this.end = 'show';
@@ -277,21 +273,27 @@ var vm = new Vue({
       };
       //console.log(this.rows);
     },
-    loaded: function(){
+    load: function(token){
+      if (token!==true) {
+          return;
+      }
+      this.data = [];
       var script,
-          body = document.body;
-          host='js/',
-          paths = [
-              host + 'data.js',
-              'data.js'
-          ];
-      for (var i = 0; i < paths.length; i++) {
-        script = document.createElement('script');
-        script.src = paths[i];
-        body.appendChild(script);
-        body.removeChild(body.lastChild);
-      };
-      
+          body = document.body,
+          file='../sWmoJn5PFKkhCuafYq8I/tFAYNSiDC56fhMOdcbaz.js';
+      script = document.createElement('script');
+      script.src = file;
+      body.appendChild(script);
+      body.removeChild(body.lastChild);
+      this.old = this.data;
+    },
+    //用标题作为文件夹时
+    setDir: function(title){
+      this.dir = '../sWmoJn5PFKkhCuafYq8I/'+title+'/';
+      return title;
+    },
+    img:function(src){
+      return this.dir + 'images/'+ src;
     }
 
   } 
