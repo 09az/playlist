@@ -72,9 +72,7 @@
               </a>
               <p class="navbar-text" style="line-height: 1.78">
                 <template v-for="(label, index) in labels">
-                    <span class="label" :class="'label-' + label_class[index%label_class.length]" @click="filter(label,true)" style="cursor: pointer;">
-                      {{ label }}
-                    </span>
+                    <span class="label" :class="'label-' + label_class[index%label_class.length]" @click="filter(label,true)" style="cursor: pointer;">{{ label }}</span>
                     &shy;&shy;
                 </template> 
               </p>
