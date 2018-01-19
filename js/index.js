@@ -36,6 +36,11 @@ Vue.component('rows', {
                                 {{ label }}\
                               </span>&shy;\
                           </template> \
+                          <template v-for="(src,label) in item.src">\
+                              <span class="label" :class="\'label-\' + label_class[index%label_class.length]" @click="filter(label)" style="cursor: pointer;">\
+                                {{ label }}\
+                              </span>&shy;\
+                          </template> \
                         <span/>\
                       </p>\
                       <p>\
@@ -113,6 +118,11 @@ var vm = new Vue({
   					return true;
   				};
   			};
+        for (var key in value.src) {
+          if (key == label) {
+            return true;
+          };
+        }
   		});
       if (change) {
         this.changeview();
@@ -273,14 +283,18 @@ var vm = new Vue({
       };
       //console.log(this.rows);
     },
-    load: function(token){
+    load: function(token,clearStorage=false){
       if (token!==true) {
           return;
       }
+      if(clearStorage){
+        sessionStorage.clear();
+      }
+
       this.data = [];
       var script,
           body = document.body,
-          file='../sWmoJn5PFKkhCuafYq8I/tFAYNSiDC56fhMOdcbaz.js';
+          file='../sWmoJn5PFKkhCuafYq8I/tFAYNSiDC56fhMOdcbaz.js?'+Math.random();
       script = document.createElement('script');
       script.src = file;
       body.appendChild(script);
