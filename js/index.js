@@ -57,6 +57,7 @@ var vm = new Vue({
   el: '#app',
   data: {
     index:-1,//当前的记录
+      item:null,
     labels:{},//导航条label
     hidden:true,
     old:[],
@@ -93,7 +94,8 @@ var vm = new Vue({
   watch: {
   	index: function () {
       if (this.index > -1) {
-      	this.labels = this.items[this.index].label;
+          var item = this.items[this.index];
+      	this.labels = item.label.concat(Object.keys(item.src));
       }
     },
     items: function(){
@@ -137,6 +139,7 @@ var vm = new Vue({
       console.log(this.items[index].src)
       for (var key in this.items[index].src) {
         this.source = this.items[index].src[key];
+        break;
       }
   		this.poster = this.items[index].poster;
       this.images = this.items[index].images;
