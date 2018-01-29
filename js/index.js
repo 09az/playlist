@@ -36,11 +36,6 @@ Vue.component('rows', {
                                 {{ label }}\
                               </span>&shy;\
                           </template> \
-                          <template v-for="(src,label) in item.src">\
-                              <span class="label" :class="\'label-\' + label_class[index%label_class.length]" @click="filter(label)" style="cursor: pointer;">\
-                                {{ label }}\
-                              </span>&shy;\
-                          </template> \
                         <span/>\
                       </p>\
                       <p>\
@@ -57,16 +52,13 @@ var vm = new Vue({
   el: '#app',
   data: {
     index:-1,//当前的记录
-      item:null,
-    labels:{},//导航条label
+    item:{},
     hidden:true,
     old:[],
     data:[],
     source:'',
-    poster:'',
     playbackRate:1,//播放速度
     page:1,
-    images:[],
     pageSize:12,
     end:'hidden',//没有更多数据了
     currentTime:70,
@@ -94,8 +86,7 @@ var vm = new Vue({
   watch: {
   	index: function () {
       if (this.index > -1) {
-          var item = this.items[this.index];
-      	this.labels = item.label.concat(Object.keys(item.src));
+        this.item = this.items[this.index];
       }
     },
     items: function(){

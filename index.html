@@ -71,7 +71,7 @@
                 </span>
               </a>
               <p class="navbar-text" style="line-height: 1.78">
-                <template v-for="(label, index) in labels">
+                <template v-for="(label, index) in item.label">
                     <span class="label" :class="'label-' + label_class[index%label_class.length]" @click="filter(label,true)" style="cursor: pointer;">{{ label }}</span>
                     &shy;&shy;
                 </template> 
@@ -81,11 +81,19 @@
           </div>
         </nav>
         <div class="col-xs-12 col-md-10 col-md-offset-1">
-          <video id="playbox" width="100%" controls preload muted name="media" :poster="poster" :src="source" type="video/mp4">
+          <video id="playbox" width="100%" controls preload muted name="media" :poster="item.poster" :src="source" type="video/mp4">
           </video>
-          <div class="thumbnail" v-show="images">
-            <h5>详情</h5>
-            <img :src="src" alt="..." v-for="src in images">
+          <div class="thumbnail">
+            <div v-show="item.src">
+              <h5>清晰度</h5>
+              <div class="btn-group btn-group-xs">
+                <button class="btn btn-primary" :class="{disabled:value == source}" @click="source=value" v-for="(value,key) in item.src">{{ key }}</button>
+              </div>
+            </div>
+            <div v-show="item.images">
+              <h5>详情</h5>
+              <img :src="src" alt="..." v-for="src in item.images">
+            </div>
           </div>
         </div>
       </div>
